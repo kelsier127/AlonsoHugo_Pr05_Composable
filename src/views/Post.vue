@@ -1,17 +1,35 @@
 <template>
-  <div v-if="post && user">
-    <h1 class="text-3xl">{{ post.title }}</h1>
-    <div class="text-gray-500 mb-10">by {{ user.name }}</div>
-    <div>{{ post.body }}</div>
-  </div>
+  <p> {{ posts.userId }} </p>
+  <h1 class="text-3xl"> {{ posts.title }} </h1>
+  <p class="text-lg"> {{ posts.body }} </p>
+  <p class="text-right"> BY: {{ users }} </p>
 </template>
+
 <script setup>
-const post = {
-  title:
-    "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-  body: "quia et suscipit suscipit recusandae consequuntur expedita et cum reprehenderit molestiae ut ut quas totam nostrum rerum est autem sunt rem eveniet architecto",
-};
-const user = {
-  name: "Leanne Graham",
-};
+import fetchApi from "../composable/llegirPosts.js";
+import fetchUsersApi from "../composable/llegirUsuari.js";
+import { watch } from "vue";
+
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+
+const id = route.params.id;
+
+const { posts, leerPosts } = fetchApi(id);
+
+
+leerPosts();
+
+watch(() => posts, (newPosts) => {
+  if (newPosts && newPosts.userId) {
+    const { users, leerUsers } = fetchUsersApi(posts.userId);
+    leerUsers();
+    console.log(users);
+  }
+});
+
+
+/*const { users, leerUsers } = fetchUsersApi(posts.userId);
+leerUsers();*/
 </script>
