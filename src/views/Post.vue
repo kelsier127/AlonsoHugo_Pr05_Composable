@@ -1,35 +1,31 @@
 <template>
-  <p> {{ posts.userId }} </p>
   <h1 class="text-3xl"> {{ posts.title }} </h1>
+  <p class="text-left"> BY: {{ user }} </p>
+  <br>
   <p class="text-lg"> {{ posts.body }} </p>
-  <p class="text-right"> BY: {{ users }} </p>
 </template>
 
 <script setup>
+import { onMounted,ref } from "vue";
 import fetchApi from "../composable/llegirPosts.js";
-import fetchUsersApi from "../composable/llegirUsuari.js";
-import { watch } from "vue";
-
 import { useRoute } from "vue-router";
 
 const route = useRoute();
 
 const id = route.params.id;
 
-const { posts, leerPosts } = fetchApi(id);
+const { posts, leerPosts, retornarNombre } = fetchApi(id);
 
+let user = ref('')
 
-leerPosts();
-
-watch(() => posts, (newPosts) => {
-  if (newPosts && newPosts.userId) {
-    const { users, leerUsers } = fetchUsersApi(posts.userId);
-    leerUsers();
-    console.log(users);
-  }
+onMounted(async () => {
+  await leerPosts();
+  user.value = await retornarNombre(posts.value.userId);
+  console.log(user.value);
 });
 
 
-/*const { users, leerUsers } = fetchUsersApi(posts.userId);
-leerUsers();*/
+
+
+
 </script>

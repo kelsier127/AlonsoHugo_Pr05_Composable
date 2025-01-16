@@ -10,6 +10,13 @@ export default function fetchApi(id = "") {
         .then((res) => res.json())
         .then((json) => (posts.value = json))
     }
+
+    const retornarNombre = async (id) => {
+        const res = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
+        const data = await res.json()
+        return data.name
+    }
     
-    return { posts, leerPosts }
+    return { posts, leerPosts, retornarNombre }
 }
+
